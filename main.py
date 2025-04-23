@@ -123,6 +123,11 @@ async def get_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update.effective_chat
     await update.message.reply_text(f"Chat ID: `{chat.id}`")
 
+async def forwarded_chat_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message.forward_from_chat:
+        chat_id = update.message.forward_from_chat.id
+        await update.message.reply_text(f"Forwarded from chat ID: `{chat_id}`")
+
 if __name__ == '__main__':
     keep_alive()
     print("✅ ربات روشن شد.")
@@ -132,6 +137,7 @@ if __name__ == '__main__':
         app.add_handler(CommandHandler("getid", get_id))
         app.add_handler(CallbackQueryHandler(button_handler))
         app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), uid_handler))
+        app.add_handler(MessageHandler(filters.FORWARDED, forwarded_chat_id))
         app.run_polling()
     except Exception as e:
         logger.error(f"❌ خطا در اجرای اصلی ربات: {e}")
