@@ -73,11 +73,19 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif data == 'crypto_vip':
             await query.edit_message_text("💎 عضویت VIP کریپتو به زودی افتتاح خواهد شد!", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 بازگشت", callback_data='crypto')]]))
 
-        elif data == 'toobit' or data == 'lbank_crypto':
+        elif data == 'toobit':
             waiting_for_uid[user_id] = 'crypto'
             keyboard = [[InlineKeyboardButton("🔙 بازگشت", callback_data='crypto_free')]]
             await query.edit_message_text(
-                "✅ لطفاً UID اکانتی که با رفرال ما ثبت‌نام کردید رو همینجا بفرستید.",
+                "📌 لطفاً ابتدا از طریق لینک زیر در صرافی Toobit با کد رفرال ما ثبت‌نام کنید:\n\n🔗 https://www.toobit.com/\nکد رفرال: giWAS2\n\nسپس UID خود را برای ما بفرستید:",
+                reply_markup=InlineKeyboardMarkup(keyboard)
+            )
+
+        elif data == 'lbank_crypto':
+            waiting_for_uid[user_id] = 'crypto'
+            keyboard = [[InlineKeyboardButton("🔙 بازگشت", callback_data='crypto_free')]]
+            await query.edit_message_text(
+                "📌 ثبت‌نام در صرافی LBank به‌زودی با کد رفرال اختصاصی ما فعال خواهد شد.\n\nفعلاً UID خود را بعد از ثبت‌نام ارسال نمایید:",
                 reply_markup=InlineKeyboardMarkup(keyboard)
             )
 
@@ -88,7 +96,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton("🔙 بازگشت", callback_data='crypto')]
             ]
             await query.edit_message_text(
-                "🎁 برای عضویت رایگان کریپتو:\nثبت‌نام با کد رفرال ما، سپس UID را بفرستید. بعد از تأیید، وارد کانال می‌شوید.",
+                "🎁 برای عضویت رایگان کریپتو:\nلطفاً یکی از صرافی‌های زیر را انتخاب کنید:",
                 reply_markup=InlineKeyboardMarkup(keyboard)
             )
 
