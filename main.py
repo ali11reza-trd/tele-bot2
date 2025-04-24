@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CRYPTO_CHANNEL_ID = -1002132644140  # جایگزین با chat ID واقعی کانال کریپتو
+CRYPTO_CHANNEL_ID = -1002687727934  # ✅ Chat ID نهایی از کاربر
 
 waiting_for_uid = set()
 
