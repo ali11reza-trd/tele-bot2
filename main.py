@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CRYPTO_CHANNEL_ID = -1002132644140  # جایگزین با chat ID واقعی کانال کریپتو
 
-# لیست کاربران در انتظار ارسال UID
 waiting_for_uid = set()
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -122,7 +121,7 @@ async def uid_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             invite_link = await context.bot.create_chat_invite_link(
                 chat_id=CRYPTO_CHANNEL_ID,
                 member_limit=1,
-                expire_date=int(time.time()) + 60  # 1 دقیقه
+                expire_date=int(time.time()) + 60
             )
             await update.message.reply_text(
                 f"✅ UID دریافت شد! برای عضویت روی لینک زیر بزنید (منقضی می‌شود):\n{invite_link.invite_link}"
@@ -140,6 +139,17 @@ async def forwarded_chat_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id = update.message.forward_from_chat.id
         await update.message.reply_text(f"Forwarded from chat ID: `{chat_id}`")
 
+async def channel_post_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat = update.channel_post.chat
+    logger.info(f"✅ دریافت پیام از کانال: {chat.title} | ID: {chat.id}")
+    try:
+        await context.bot.send_message(
+            chat_id=update.effective_user.id,
+            text=f"Chat ID کانال شما: `{chat.id}`"
+        )
+    except:
+        pass
+
 if __name__ == '__main__':
     keep_alive()
     print("✅ ربات روشن شد.")
@@ -150,6 +160,7 @@ if __name__ == '__main__':
         app.add_handler(CallbackQueryHandler(button_handler))
         app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), uid_handler))
         app.add_handler(MessageHandler(filters.FORWARDED, forwarded_chat_id))
+        app.add_handler(MessageHandler(filters.UpdateType.CHANNEL_POST, channel_post_handler))
         app.run_polling()
     except Exception as e:
         logger.error(f"❌ خطا در اجرای اصلی ربات: {e}")
