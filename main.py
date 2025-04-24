@@ -37,7 +37,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         if data == 'contact':
             keyboard = [
-                [InlineKeyboardButton("📷 اینستاگرام", url='https://www.instagram.com/moamir_tradegroup')],
+                [InlineKeyboardButton("📷 اینستاگرام", url='https://www.instagram.com/trading_duos?igsh=MWZic3Y1Z3ZsZmhzZA%3D%3D&utm_source=qr')],
                 [InlineKeyboardButton("🎮 دیسکورد", url='https://discord.gg/ZZBhyBhf')],
                 [InlineKeyboardButton("🔙 بازگشت", callback_data='start')]
             ]
