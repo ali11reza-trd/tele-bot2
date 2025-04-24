@@ -8,7 +8,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CRYPTO_CHANNEL_ID = -1002687727934  # ✅ Chat ID نهایی از کاربر
+CRYPTO_CHANNEL_ID = -1002687727934  # کانال کریپتو رایگان
+FOREX_CHANNEL_ID = None  # Chat ID کانال VIP فارکس بعداً جایگزین میشه
 
 waiting_for_uid = set()
 
@@ -99,10 +100,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
 
         elif data == 'forex_vip':
+            waiting_for_uid.add(user_id)
             keyboard = [[InlineKeyboardButton("🔙 بازگشت", callback_data='signals')]]
             await query.edit_message_text(
-                """برای عضویت VIP فارکس لطفاً ابتدا پرداخت را از طریق لینک زرین‌پال انجام دهید.
-پس از پرداخت، ما با شما جهت عضویت در کانال VIP تماس می‌گیریم.""",
+                "✅ لطفاً UID اکانتی که با رفرال ما ثبت‌نام کردید رو همینجا بفرستید.",
                 reply_markup=InlineKeyboardMarkup(keyboard)
             )
 
@@ -144,8 +145,8 @@ async def channel_post_handler(update: Update, context: ContextTypes.DEFAULT_TYP
     logger.info(f"✅ دریافت پیام از کانال: {chat.title} | ID: {chat.id}")
     try:
         await context.bot.send_message(
-            chat_id=update.effective_user.id,
-            text=f"Chat ID کانال شما: `{chat.id}`"
+            chat_id=update.channel_post.chat.id,
+            text=f"✅ این آی‌دی کانال شماست: `{chat.id}`"
         )
     except:
         pass
