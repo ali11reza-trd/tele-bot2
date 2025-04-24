@@ -2,12 +2,13 @@ from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes, MessageHandler, filters
 import logging
 from keep_alive import keep_alive
-import os
+import os, time
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+CRYPTO_CHANNEL_ID = -1002132644140  # جایگزین با chat ID واقعی کانال کریپتو
 
 # لیست کاربران در انتظار ارسال UID
 waiting_for_uid = set()
@@ -117,7 +118,18 @@ async def uid_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     if user_id in waiting_for_uid:
         waiting_for_uid.remove(user_id)
-        await update.message.reply_text("✅ UID دریافت شد! شما بزودی به کانال رایگان کریپتو اضافه خواهید شد.")
+        try:
+            invite_link = await context.bot.create_chat_invite_link(
+                chat_id=CRYPTO_CHANNEL_ID,
+                member_limit=1,
+                expire_date=int(time.time()) + 60  # 1 دقیقه
+            )
+            await update.message.reply_text(
+                f"✅ UID دریافت شد! برای عضویت روی لینک زیر بزنید (منقضی می‌شود):\n{invite_link.invite_link}"
+            )
+        except Exception as e:
+            logger.error(f"خطا در ساخت لینک دعوت: {e}")
+            await update.message.reply_text("❌ خطا در ساخت لینک عضویت. لطفاً دوباره امتحان کن.")
 
 async def get_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update.effective_chat
